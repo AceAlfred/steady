@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steady — daily fitness & food coach</title>
+<meta name="theme-color" content="#0f1412">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Steady">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#0f1412; --panel:#171e1b; --panel2:#1e2723; --line:#2a3530;
+  --ink:#eef3ef; --muted:#93a39b; --lime:#c6f432; --lime-ink:#14200a;
+  --coral:#ff7a59; --sky:#6cc6ff; --amber:#ffc24a; --good:#5ee08a;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:env(safe-area-inset-top) 0 calc(84px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--lime);outline-offset:-1px}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px;max-width:560px;margin:0 auto}
+header.top h1{font-size:26px;font-weight:800}
+header.top h1 span{color:var(--lime)}
+.sub{color:var(--muted);font-size:13px}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:var(--panel);display:grid;place-items:center;font-size:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+.card h2{font-size:18px;margin-bottom:8px;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.card h3{font-size:15px;margin:10px 0 6px}
+.row{display:flex;gap:10px;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--panel2);font-size:12px;color:var(--muted)}
+.btn{background:var(--lime);color:var(--lime-ink);font-weight:700;border-radius:12px;padding:11px 14px;text-align:center}
+.btn.ghost{background:var(--panel2);color:var(--ink);font-weight:600}
+.btn.small{padding:7px 11px;font-size:13px;border-radius:10px}
+.muted{color:var(--muted)}
+.tiny{font-size:12px}
+.nudge{background:linear-gradient(135deg,#22301f,#18221e);border-color:#3b4e2a}
+.nudge .big{font-family:ui-rounded,system-ui,sans-serif;font-size:20px;font-weight:800;margin:4px 0}
+.ringwrap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.ring{position:relative;width:92px;height:92px;margin:0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:15px;line-height:1.1}
+.ring .v small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.check{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.check:last-child{border-bottom:0}
+.box{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;flex:none;font-weight:800;color:var(--lime-ink)}
+.check.on .box{background:var(--lime);border-color:var(--lime)}
+.check.on .lbl{color:var(--muted);text-decoration:line-through}
+.check .auto{margin-left:auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;text-align:left}
+.chip b{display:block;font-weight:600}
+.chip span{color:var(--muted);font-size:11px}
+.chip:active{transform:scale(.97)}
+.list .item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.list .item:last-child{border-bottom:0}
+.list .item .grow{flex:1;min-width:0}
+.list .item .x{color:var(--muted);padding:4px 8px;font-size:18px}
+.water{display:flex;gap:6px;flex-wrap:wrap}
+.drop{width:34px;height:40px;border-radius:10px 10px 14px 14px;background:var(--panel2);border:1px solid var(--line)}
+.drop.on{background:var(--sky);border-color:var(--sky)}
+.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--lime);border-radius:99px}
+.warn{border-left:4px solid var(--coral)}
+.okb{border-left:4px solid var(--good)}
+.tag{font-size:11px;padding:2px 7px;border-radius:6px;background:#3a2620;color:var(--coral)}
+.tag.g{background:#1f3527;color:var(--good)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(15,20,18,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:20}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;color:var(--muted);border-radius:12px}
+nav.tabs button .ic{font-size:20px;line-height:1}
+nav.tabs button.on{color:var(--lime)}
+.view{display:none}.view.on{display:block}
+.seg{display:flex;background:var(--panel2);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;padding:8px;border-radius:9px;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--lime);color:var(--lime-ink);font-weight:700}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.sheet.on{display:flex}
+.sheet .in{background:var(--panel);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));border:1px solid var(--line)}
+label.f{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--lime);color:var(--lime-ink);font-weight:700;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.plan .d{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.plan .d:last-child{border-bottom:0}
+.plan .d b{width:38px;flex:none;color:var(--muted)}
+.plan .d.today b{color:var(--lime)}
+.stat{background:var(--panel2);border-radius:14px;padding:10px;text-align:center}
+.stat .n{font-family:ui-rounded,system-ui,sans-serif;font-size:22px;font-weight:800}
+.stat .l{font-size:11px;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+.sync{font-size:11px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Stead<span>y</span></h1>
+    <div class="sub" id="dateline"></div>
+  </div>
+  <div class="row">
+    <span class="sync muted" id="sync">…</span>
+    <button class="iconbtn" id="openSettings" aria-label="Settings">⚙︎</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- TODAY -->
+  <section class="view on" id="v-today">
+    <div class="card nudge" id="nudge"></div>
+    <div class="card" id="fastCard"></div>
+    <div class="card">
+      <h2>Today's fuel <span class="pill" id="leftPill"></span></h2>
+      <div class="ringwrap" id="rings"></div>
+    </div>
+    <div class="card">
+      <h2>Daily habits <span class="pill" id="habitScore"></span></h2>
+      <div id="checks"></div>
+    </div>
+    <div class="card">
+      <h2>Water <span class="pill" id="waterPill"></span></h2>
+      <div class="water" id="water"></div>
+    </div>
+    <div class="card">
+      <h2>Quick add <button class="btn small ghost" data-go="food">All foods →</button></h2>
+      <div class="chips" id="quick"></div>
+    </div>
+  </section>
+
+  <!-- FOOD -->
+  <section class="view" id="v-food">
+    <div class="card">
+      <h2>The plate rule</h2>
+      <div class="row" style="align-items:flex-start;gap:14px">
+        <svg width="120" height="120" viewBox="0 0 120 120" style="flex:none">
+          <circle cx="60" cy="60" r="56" fill="#2a3530"/>
+          <path d="M60 60 L60 6 A54 54 0 0 1 60 114 Z" fill="#5ee08a"/>
+          <path d="M60 60 L60 114 A54 54 0 0 1 6 60 Z" fill="#ff7a59"/>
+          <path d="M60 60 L6 60 A54 54 0 0 1 60 6 Z" fill="#ffc24a"/>
+          <text x="86" y="64" font-size="10" text-anchor="middle" fill="#0f1412" font-weight="700">VEG</text>
+          <text x="38" y="88" font-size="9" text-anchor="middle" fill="#0f1412" font-weight="700">PROTEIN</text>
+          <text x="38" y="40" font-size="9" text-anchor="middle" fill="#0f1412" font-weight="700">PROT/FAT</text>
+        </svg>
+        <div class="tiny">
+          <p><b style="color:var(--good)">½ vegetables</b> — salad, cucumber, tomato, broccoli, peppers.</p>
+          <p><b style="color:var(--coral)">¼–½ protein</b> — chicken, kebab meat, eggs, keso.</p>
+          <p><b style="color:var(--amber)">a little fat</b> — a thumb of oil, sauce, avocado or cheese.</p>
+          <p class="muted" style="margin-top:6px">Use a 23–25 cm plate. No bread, rice, fries or pasta on it.</p>
+        </div>
+      </div>
+      <h3>Hand portions (per meal)</h3>
+      <div class="grid2 tiny">
+        <div class="stat"><div class="n">✋ 1–2</div><div class="l">palms of protein</div></div>
+        <div class="stat"><div class="n">✊ 2</div><div class="l">fists of veg</div></div>
+        <div class="stat"><div class="n">👍 1</div><div class="l">thumb of fat / sauce</div></div>
+        <div class="stat"><div class="n">🤲 0</div><div class="l">cupped hands of carbs</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Log food <button class="btn small" id="customFood">+ Custom</button></h2>
+      <div class="seg" id="slotSeg">
+        <button data-slot="Breakfast">Breakfast</button><button data-slot="Lunch">Lunch</button><button data-slot="Dinner">Dinner</button><button data-slot="Snack">Snack</button>
+      </div>
+      <p class="tiny muted" style="margin:8px 0">Tap to add. Values are approximate per portion.</p>
+      <div class="chips" id="library"></div>
+    </div>
+
+    <div class="card">
+      <h2>Eaten today <span class="pill" id="eatenPill"></span></h2>
+      <div class="list" id="eaten"></div>
+    </div>
+
+    <div class="card">
+      <h2>Meal ideas</h2>
+      <p class="tiny muted">Built from what you already eat. Tap “Add” to log the whole meal.</p>
+      <div id="ideas"></div>
+    </div>
+
+    <div class="card">
+      <h2>Kebab-shop & craving swaps</h2>
+      <div id="swaps"></div>
+    </div>
+  </section>
+
+  <!-- MOVE -->
+  <section class="view" id="v-move">
+    <div class="card nudge" id="todayPlan"></div>
+    <div class="card">
+      <h2>This week <span class="pill" id="weekPill"></span></h2>
+      <div class="bar"><i id="weekBar" style="width:0"></i></div>
+      <p class="tiny muted" style="margin-top:6px" id="weekNote"></p>
+    </div>
+    <div class="card">
+      <h2>Log a session</h2>
+      <div class="seg" id="typeSeg">
+        <button data-type="Bike">🚴 Bike</button><button data-type="NTC">✔︎ NTC</button><button data-type="Stretch">🧘 Stretch</button><button data-type="Walk">🚶 Walk</button>
+      </div>
+      <div class="grid2" style="margin-top:10px">
+        <div><label class="f">Minutes</label><input type="number" id="mMin" inputmode="numeric" value="30" min="1"></div>
+        <div><label class="f">Intensity</label>
+          <select id="mInt"><option value="easy">Easy</option><option value="mod" selected>Moderate</option><option value="hard">Hard</option></select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="muted tiny" style="flex:1" id="mEst"></div>
+        <button class="btn" id="logMove">Log it</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Done today</h2>
+      <div class="list" id="moves"></div>
+    </div>
+    <div class="card">
+      <h2>Weekly plan</h2>
+      <div class="plan" id="plan"></div>
+    </div>
+    <div class="card">
+      <h2>Bike session ideas</h2>
+      <div id="bikeIdeas"></div>
+    </div>
+    <div class="card">
+      <h2>Nike Training Club picks</h2>
+      <div id="ntcIdeas" class="tiny"></div>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="view" id="v-progress">
+    <div class="card">
+      <h2>Weigh-in</h2>
+      <div class="row">
+        <input type="number" id="wIn" step="0.1" inputmode="decimal" placeholder="kg">
+        <button class="btn" id="wSave" style="white-space:nowrap">Save today</button>
+      </div>
+      <p class="tiny muted" style="margin-top:6px">Same time every morning, after the toilet, before food. Watch the 7-day trend, not the daily number.</p>
+    </div>
+    <div class="card" id="guard"></div>
+    <div class="card">
+      <h2>Trend <span class="pill">line = 7-day avg</span></h2>
+      <div id="chart"></div>
+      <div class="grid3" style="margin-top:12px" id="wstats"></div>
+    </div>
+    <div class="card">
+      <h2>Last 7 days</h2>
+      <div class="list" id="history"></div>
+    </div>
+    <div class="card">
+      <h2>Streaks</h2>
+      <div class="grid3" id="streaks"></div>
+    </div>
+  </section>
+
+  <!-- IDEAS / COACH -->
+  <section class="view" id="v-coach">
+    <div class="card nudge">
+      <h2>Why the yo-yo happens</h2>
+      <p class="tiny">Crash diets lose weight fast, then hunger and habits win and it comes back. This app aims for <b>slow and boring</b>: about 0.5% of your body weight per week, high protein to keep muscle, and daily habits you can keep for years.</p>
+    </div>
+    <div class="card">
+      <h2>Your rules</h2>
+      <div class="list tiny" id="rules"></div>
+    </div>
+    <div class="card">
+      <h2>Tip of the day</h2>
+      <p id="tip"></p>
+      <button class="btn small ghost" id="nextTip" style="margin-top:10px">Another tip</button>
+    </div>
+    <div class="card">
+      <h2>Fasting, the smart way</h2>
+      <div class="tiny">
+        <p>• <b>Start easy.</b> Begin with 16 h (finish dinner at 20:00, eat lunch at 12:00). Move to 18–24 h only once 16 h feels easy.</p>
+        <p>• <b>Drink:</b> water, sparkling water, black coffee, tea. Add a pinch of salt if you get a headache.</p>
+        <p>• <b>Break it gently:</b> protein + veg (eggs, keso, chicken + salad). A fast followed by a kebab-with-fries feast cancels itself out.</p>
+        <p>• <b>Hit your protein</b> on fast days anyway, in your eating window.</p>
+        <p>• <b>Training:</b> an easy bike ride or stretching while fasting is fine. Save hard intervals for eating days.</p>
+        <p>• <b>Stop the fast</b> if you feel dizzy, shaky or unwell. Check with a doctor first if you take medication (especially for diabetes or blood pressure) or have a history of disordered eating.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h2>When you slip</h2>
+      <p class="tiny">One kebab with bread and fries isn't a failure, it's one meal. Log it, drink water, and make the <b>next</b> meal a plate-rule meal. Never “start again Monday”: start again at the next meal.</p>
+    </div>
+    <div class="card">
+      <h2>Google Sheets sync</h2>
+      <p class="tiny muted" id="syncNote"></p>
+      <label class="f">Web app URL (from Apps Script → Deploy)</label>
+      <input id="syncUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <label class="f">Sync key (from the “Start here” tab)</label>
+      <input id="syncKey" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="grid2" style="margin-top:10px">
+        <button class="btn small" id="syncConnect">Connect</button>
+        <button class="btn small ghost" id="syncNow">Sync now</button>
+      </div>
+      <button class="btn small ghost" id="syncOff" style="margin-top:8px;width:100%">Disconnect</button>
+    </div>
+    <div class="card">
+      <h2>Your data</h2>
+      <p class="tiny muted" id="dataNote"></p>
+      <div class="grid2" style="margin-top:10px">
+        <button class="btn small" id="exportBtn">⬇︎ Back up</button>
+        <label class="btn small ghost" style="cursor:pointer">⬆︎ Restore<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+      </div>
+      <p class="tiny muted" style="margin-top:8px" id="backupNote"></p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs"><div class="in">
+  <button data-tab="today" class="on"><span class="ic">◉</span>Today</button>
+  <button data-tab="food"><span class="ic">🍗</span>Food</button>
+  <button data-tab="move"><span class="ic">🚴</span>Move</button>
+  <button data-tab="progress"><span class="ic">📉</span>Progress</button>
+  <button data-tab="coach"><span class="ic">💡</span>Coach</button>
+</div></nav>
+
+<!-- Settings sheet -->
+<div class="sheet" id="settings"><div class="in">
+  <h2 style="margin-bottom:4px">Your targets</h2>
+  <p class="tiny muted">Fill in your details and tap “Suggest targets”, or set them yourself.</p>
+  <div class="grid2">
+    <div><label class="f">Name</label><input id="sName"></div>
+    <div><label class="f">Sex</label><select id="sSex"><option value="m">Male</option><option value="f">Female</option></select></div>
+    <div><label class="f">Age</label><input id="sAge" type="number" inputmode="numeric"></div>
+    <div><label class="f">Height (cm)</label><input id="sHeight" type="number" inputmode="numeric"></div>
+    <div><label class="f">Current weight (kg)</label><input id="sWeight" type="number" step="0.1" inputmode="decimal"></div>
+    <div><label class="f">Goal weight (kg)</label><input id="sGoal" type="number" step="0.1" inputmode="decimal"></div>
+  </div>
+  <button class="btn ghost" id="suggest" style="width:100%;margin-top:12px">✨ Suggest targets</button>
+  <div class="grid2">
+    <div><label class="f">Calories / day</label><input id="sKcal" type="number" inputmode="numeric"></div>
+    <div><label class="f">Protein g / day</label><input id="sProt" type="number" inputmode="numeric"></div>
+    <div><label class="f">Carb limit g / day</label><input id="sCarb" type="number" inputmode="numeric"></div>
+    <div><label class="f">Water glasses / day</label><input id="sWater" type="number" inputmode="numeric"></div>
+    <div><label class="f">Active minutes / week</label><input id="sMin" type="number" inputmode="numeric"></div>
+    <div><label class="f">Kitchen closes at</label><input id="sClose" type="time"></div>
+  </div>
+  <h3 style="margin-top:16px">Fasting</h3>
+  <label class="f">Fast days (pick 1–2)</label>
+  <div class="seg" id="sFastDays"><button data-fd="0">Mon</button><button data-fd="1">Tue</button><button data-fd="2">Wed</button><button data-fd="3">Thu</button><button data-fd="4">Fri</button><button data-fd="5">Sat</button><button data-fd="6">Sun</button></div>
+  <label class="f">Fast length</label>
+  <select id="sFastH">
+    <option value="16">16 h: dinner → lunch (16:8)</option>
+    <option value="18">18 h: dinner → late lunch</option>
+    <option value="20">20 h: one big dinner window</option>
+    <option value="24">24 h: dinner → dinner</option>
+  </select>
+  <p class="tiny muted" id="suggestNote" style="margin-top:8px"></p>
+  <div class="row" style="margin-top:14px">
+    <button class="btn ghost" id="closeSettings" style="flex:1">Cancel</button>
+    <button class="btn" id="saveSettings" style="flex:1">Save</button>
+  </div>
+</div></div>
+
+<!-- Custom food sheet -->
+<div class="sheet" id="foodSheet"><div class="in">
+  <h2 style="margin-bottom:8px">Add custom food</h2>
+  <label class="f">What did you eat?</label><input id="cfName" placeholder="e.g. Chicken salad from work">
+  <div class="grid3">
+    <div><label class="f">kcal</label><input id="cfK" type="number" inputmode="numeric"></div>
+    <div><label class="f">Protein g</label><input id="cfP" type="number" inputmode="numeric"></div>
+    <div><label class="f">Carbs g</label><input id="cfC" type="number" inputmode="numeric"></div>
+  </div>
+  <label class="row tiny" style="margin-top:12px;gap:8px"><input type="checkbox" id="cfSave" style="width:auto"> Save to my foods</label>
+  <div class="row" style="margin-top:14px">
+    <button class="btn ghost" id="cfCancel" style="flex:1">Cancel</button>
+    <button class="btn" id="cfAdd" style="flex:1">Add</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- data ---------------- */
+const FOODS = [
+  {id:'chk',  n:'Grilled chicken breast', u:'150 g', k:250, p:46, c:0},
+  {id:'ckeb', n:'Chicken kebab meat, no bread', u:'150 g', k:300, p:32, c:4},
+  {id:'shish',n:'Chicken shish skewer', u:'200 g', k:320, p:52, c:2},
+  {id:'mkeb', n:'Meat kebab / döner, no bread', u:'150 g', k:420, p:26, c:5, warn:'Fattier than chicken: keep the portion to one palm.'},
+  {id:'kplate',n:'Kebab plate: meat + salad', u:'no fries/bread', k:520, p:35, c:10},
+  {id:'sauce',n:'Garlic / kebab sauce', u:'2 tbsp', k:120, p:1, c:2},
+  {id:'egg2', n:'Eggs, boiled', u:'2 large', k:145, p:13, c:1},
+  {id:'egg3', n:'Eggs, scrambled in butter', u:'3 large', k:280, p:19, c:1},
+  {id:'keso', n:'Cottage cheese (keso)', u:'200 g', k:196, p:24, c:6},
+  {id:'kvarg',n:'Kvarg / skyr, plain', u:'200 g', k:130, p:22, c:8},
+  {id:'salad',n:'Big salad, cucumber, tomato', u:'1 bowl', k:50, p:2, c:8},
+  {id:'veg',  n:'Broccoli / green veg', u:'150 g', k:50, p:4, c:6},
+  {id:'salmon',n:'Salmon fillet', u:'150 g', k:310, p:31, c:0},
+  {id:'tuna', n:'Tuna in water', u:'1 can', k:130, p:28, c:0},
+  {id:'avo',  n:'Avocado', u:'½', k:120, p:1.5, c:2},
+  {id:'oil',  n:'Olive oil', u:'1 tbsp', k:120, p:0, c:0},
+  {id:'cheese',n:'Cheese', u:'2 slices', k:110, p:8, c:0},
+  {id:'nuts', n:'Nuts', u:'30 g', k:185, p:6, c:4},
+  {id:'bread',n:'Pita / bread (if you do)', u:'1 piece', k:250, p:8, c:48, bad:true},
+  {id:'fries',n:'Fries (if you do)', u:'medium', k:380, p:4, c:48, bad:true},
+];
+const QUICK = ['chk','ckeb','shish','egg2','keso','salad','kplate','kvarg'];
+const MEALS = [
+  {slot:'Breakfast', n:'Egg scramble + spinach + keso', items:['egg3','keso']},
+  {slot:'Breakfast', n:'Keso bowl with cucumber, pepper & a few nuts', items:['keso','salad']},
+  {slot:'Lunch', n:'Chicken kebab salad plate, sauce on the side', items:['ckeb','salad','sauce']},
+  {slot:'Lunch', n:'Grilled chicken + big salad + olive oil', items:['chk','salad','oil']},
+  {slot:'Lunch', n:'Tuna & egg salad', items:['tuna','egg2','salad']},
+  {slot:'Dinner', n:'Chicken shish + broccoli', items:['shish','veg']},
+  {slot:'Dinner', n:'Salmon + green veg', items:['salmon','veg']},
+  {slot:'Dinner', n:'Meat kebab plate, double salad, no fries', items:['mkeb','salad','salad']},
+  {slot:'Snack', n:'2 boiled eggs', items:['egg2']},
+  {slot:'Snack', n:'Kvarg with cinnamon', items:['kvarg']},
+];
+const SWAPS = [
+  ['Kebab in pita or bread','Kebab plate with extra salad (saves about 250 kcal, 45 g carbs)'],
+  ['Fries on the side','Double salad or grilled veg'],
+  ['Kebab pizza / rulle','Chicken shish plate'],
+  ['Rice or bulgur with the plate','Ask for extra salad or grilled vegetables instead'],
+  ['Lots of garlic sauce','Ask for it on the side and use 1–2 tbsp'],
+  ['Soda / juice','Sparkling water (Ramlösa, Loka) or black coffee'],
+  ['Late-night snacking','Kitchen closed. If truly hungry: 200 g keso or 2 boiled eggs'],
+];
+const PLAN = [ // index 0 = Monday
+  {t:'Bike 30 min, moderate + 10 min stretch', type:'Bike', min:30},
+  {t:'NTC strength workout, 20–30 min', type:'NTC', min:25},
+  {t:'Bike intervals, 25 min', type:'Bike', min:25},
+  {t:'NTC mobility / stretch, 20 min', type:'Stretch', min:20},
+  {t:'Bike 40 min, easy to moderate', type:'Bike', min:40},
+  {t:'NTC full-body workout + stretch', type:'NTC', min:30},
+  {t:'Walk 30 min + light stretch, recovery', type:'Walk', min:30},
+];
+const BIKE = [
+  ['Intervals 25','5 min warm-up → 8 × (1 min hard / 1 min easy) → 4 min cool-down.'],
+  ['Steady 40','40 min at a pace where you can talk in short sentences. Best fat-burning habit builder.'],
+  ['Pyramid 30','5 min warm-up, then 1-2-3-4-3-2-1 min hard with 1 min easy between, cool-down.'],
+  ['TV ride','Easy pace through one TV episode. Low effort, still counts.'],
+];
+const NTC = [
+  'Open Nike Training Club and filter by <b>Mobility</b> or <b>Yoga</b> for a 10–20 min stretch after the bike.',
+  'Pick a <b>Strength</b> workout of 20–30 min, 2 × per week, to keep muscle while you lose fat.',
+  'Short on time? Any <b>Endurance</b> or <b>Strength</b> workout under 15 min still counts. Log it here.',
+  'Do a <b>morning stretch</b> right after weighing in to build the habit chain.',
+];
+const TIPS = [
+  'Eat protein first in every meal. It fills you up and you naturally eat less of everything else.',
+  'Plan tomorrow\'s dinner tonight. Most bad choices happen when you\'re hungry and have no plan.',
+  'Keep boiled eggs and keso in the fridge so a high-protein snack is always ready in 10 seconds.',
+  'At the kebab place, order “tallrik utan pommes, extra sallad, såsen vid sidan”.',
+  'Your weight can jump 1–2 kg overnight from salt and water, especially after kebab. Trust the 7-day average.',
+  'Drink a glass of water before each meal.',
+  'Put the bike where you see it. Laying out your clothes the night before makes training automatic.',
+  'Eat slowly: put the fork down between bites. Fullness takes about 20 minutes to register.',
+  'Sleep under 7 hours makes you hungrier the next day. Bedtime is part of the plan.',
+  'Don\'t drink your calories: soda, juice, beer and lattes add up quickly.',
+  'Losing weight fast feels great but is how the yo-yo starts. Aim for 0.3–0.7 kg per week.',
+  'Once you reach your goal, raise calories slowly by about 100–150 kcal per week while keeping your habits.',
+];
+const HABITS = [
+  {id:'weigh', l:'Weigh in, morning', auto:'weight'},
+  {id:'protein', l:'Protein in every meal'},
+  {id:'plate', l:'Followed the plate rule'},
+  {id:'nocarb', l:'No bread, rice, pasta or fries'},
+  {id:'move', l:'Moved today (bike or NTC)', auto:'move'},
+  {id:'stretch', l:'Stretched 10 min', auto:'stretch'},
+  {id:'water', l:'Hit water goal', auto:'water'},
+  {id:'closed', l:'Kitchen closed on time'},
+];
+const RATE = {Bike:{easy:5,mod:7.5,hard:10}, NTC:{easy:4,mod:6,hard:8}, Stretch:{easy:2.5,mod:3,hard:3.5}, Walk:{easy:3.5,mod:4.5,hard:5.5}};
+
+/* ---------------- storage ---------------- */
+const Store = {
+  mode:'local', col:null,
+  async init(){
+    try{
+      if(window.claude && typeof window.claude.use==='function'){
+        const timeout = new Promise(r=>setTimeout(()=>r(null),10000));
+        const db = await Promise.race([window.claude.use('db'), timeout]);
+        const user = db ? await Promise.race([window.claude.use('user'), timeout]) : null;
+        if(db && user && typeof user.id==='function'){
+          const id = await user.id();
+          if(id){ this.col = db.collection('data/users/'+id); this.mode='cloud'; }
+        }
+      }
+    }catch(e){ console.warn('db unavailable',e); }
+  },
+  local(k){ try{ return JSON.parse(localStorage.getItem('steady:'+k)); }catch(e){ return null; } },
+  async get(k){
+    if(this.mode==='cloud'){
+      try{
+        const r = await this.col.doc(k).get();
+        let d = null;
+        if(r && typeof r.data==='function') d = r.data(); else d = r;
+        if(d && typeof d==='object') return d;
+        return null;
+      }catch(e){ console.warn('get failed',k,e); }
+    }
+    return this.local(k);
+  },
+  timers:{}, chain:{},
+  set(k,v){
+    try{ localStorage.setItem('steady:'+k, JSON.stringify(v)); }catch(e){}
+    Sync.touch(k);
+    if(this.mode!=='cloud') return;
+    clearTimeout(this.timers[k]);
+    this.timers[k] = setTimeout(()=>{
+      const snap = JSON.parse(JSON.stringify(v));
+      this.chain[k] = (this.chain[k]||Promise.resolve()).then(()=>this.col.doc(k).set(snap)).then(()=>setSync('saved'),e=>{console.warn(e);setSync('offline');});
+    },500);
+  }
+};
+
+/* ---------------- Google Sheets sync ---------------- */
+const Sync = {
+  cfg(){ try{ return JSON.parse(localStorage.getItem('steady:__sync'))||{}; }catch(e){ return {}; } },
+  saveCfg(c){ localStorage.setItem('steady:__sync', JSON.stringify(c)); },
+  meta(){ try{ return JSON.parse(localStorage.getItem('steady:__meta'))||{}; }catch(e){ return {}; } },
+  dirty(){ try{ return JSON.parse(localStorage.getItem('steady:__dirty'))||[]; }catch(e){ return []; } },
+  on(){ const c=this.cfg(); return !!(c.url && c.key); },
+  touch(k){
+    try{
+      const m=this.meta(); m[k]=Date.now(); localStorage.setItem('steady:__meta', JSON.stringify(m));
+      const d=new Set(this.dirty()); d.add(k); localStorage.setItem('steady:__dirty', JSON.stringify([...d]));
+    }catch(e){}
+    this.schedule();
+  },
+  schedule(ms=2500){ clearTimeout(this._t); if(this.on()) this._t=setTimeout(()=>this.flush(), ms); },
+  busy:false,
+  async flush(){
+    if(!this.on() || this.busy) return;
+    if(!navigator.onLine){ this.status('offline'); return; }
+    const keys=this.dirty(); if(!keys.length){ this.status('ok'); return; }
+    this.busy=true; this.status('syncing');
+    const meta=this.meta(), items={};
+    keys.forEach(k=>{ const v=Store.local(k); if(v!=null) items[k]={t:meta[k]||Date.now(), v}; });
+    try{
+      const res = await fetch(this.cfg().url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({key:this.cfg().key, items})});
+      const j = await res.json();
+      if(!j.ok) throw new Error(j.error||'sync failed');
+      const now=this.meta(), left=this.dirty().filter(k=> !(k in items) || now[k]!==items[k].t);
+      localStorage.setItem('steady:__dirty', JSON.stringify(left));
+      const c=this.cfg(); c.last=Date.now(); this.saveCfg(c);
+      this.status(left.length?'pending':'ok');
+      if(left.length) this.schedule(1000);
+    }catch(e){ console.warn(e); this.status('error', e.message); this.schedule(60000); }
+    finally{ this.busy=false; }
+  },
+  async pull(){
+    if(!this.on() || !navigator.onLine) return false;
+    const c=this.cfg();
+    const res = await fetch(c.url+(c.url.includes('?')?'&':'?')+'action=pull&key='+encodeURIComponent(c.key));
+    const j = await res.json(); if(!j.ok) throw new Error(j.error||'pull failed');
+    const items=j.items||{}, meta=this.meta(); let changed=false;
+    Object.entries(items).forEach(([k,it])=>{
+      if(!it || it.v==null) return;
+      if(!(k in meta) || it.t > meta[k]){ localStorage.setItem('steady:'+k, JSON.stringify(it.v)); meta[k]=it.t; changed=true; }
+    });
+    localStorage.setItem('steady:__meta', JSON.stringify(meta));
+    const d=new Set(this.dirty());
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith('steady:') && !k.startsWith('steady:__') && k!=='steady:lastBackup'){ const kk=k.slice(7); if(!items[kk] || (meta[kk]||0) > items[kk].t) d.add(kk); } }
+    localStorage.setItem('steady:__dirty', JSON.stringify([...d]));
+    return changed;
+  },
+  status(s,msg){
+    this.state=s; this.msg=msg||'';
+    const el=document.getElementById('sync'); if(!el) return;
+    if(!this.on()){ el.textContent='📱 offline'; return; }
+    el.textContent = {ok:'✓ Sheets', syncing:'⟳ syncing', pending:'⟳ syncing', offline:'📴 queued', error:'⚠︎ sync error'}[s]||'';
+    const n=document.getElementById('syncNote'); if(n) n.textContent = syncText();
+  }
+};
+function syncText(){
+  const c=Sync.cfg(); if(!Sync.on()) return 'Not connected. Your data stays on this phone only.';
+  const q=Sync.dirty().length;
+  let t = c.last ? 'Last synced '+new Date(c.last).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'.' : 'Connected.';
+  if(q) t+=` ${q} change${q>1?'s':''} waiting${navigator.onLine?'':' for internet'}.`;
+  if(Sync.state==='error') t+=' Last error: '+Sync.msg;
+  return t;
+}
+window.addEventListener('online', ()=>Sync.flush());
+window.addEventListener('offline', ()=>Sync.status('offline'));
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') Sync.flush(); });
+setInterval(()=>Sync.flush(), 5*60000);
+
+/* ---------------- state ---------------- */
+const today = () => new Date().toLocaleDateString('sv-SE');
+const dkey = d => 'day-'+d;
+let TODAY = today();
+let profile, day, weights, summary;
+let slot = guessSlot();
+let mtype = 'Bike';
+let tipIdx = Math.floor(Date.now()/864e5) % TIPS.length;
+
+const DEFAULT_PROFILE = {name:'',sex:'m',age:null,height:null,weight:null,goal:null,kcal:1900,protein:140,carbs:60,water:8,weekMin:150,close:'20:00',myFoods:[],fastDays:[0,3],fastH:16};
+let fast = {active:null, log:[]};
+const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const dowIdx = (d=new Date()) => (d.getDay()+6)%7;
+function fmtDur(ms){ const m=Math.max(0,Math.floor(ms/60000)); return `${Math.floor(m/60)}h ${String(m%60).padStart(2,'0')}m`; }
+function fastsThisWeek(){ const wk=weekDates(); return fast.log.filter(f=>wk.includes(new Date(f.end).toLocaleDateString('sv-SE')) && (f.end-f.start)>=12*36e5).length; }
+function isFastDay(){ return (profile.fastDays||[]).includes(dowIdx()); }
+function renderFast(){
+  const el=$('#fastCard'); const fd=(profile.fastDays||[]).map(i=>DOW[i]).join(' & ')||'none set';
+  const done=fastsThisWeek(), goal=(profile.fastDays||[]).length;
+  let html=`<h2>Fasting <span class="pill">${done} / ${goal} this week</span></h2>`;
+  if(fast.active){
+    const el_ms=Date.now()-fast.active.start, tgt=fast.active.target*36e5, pct=Math.min(1,el_ms/tgt);
+    const endAt=new Date(fast.active.start+tgt);
+    const phase = el_ms<4*36e5?'Digesting your last meal' : el_ms<12*36e5?'Blood sugar settling, hunger comes in waves and passes' : el_ms<16*36e5?'Fat-burning mode, drink water' : 'Deep in the fast. Listen to your body';
+    html+=`<div class="big" style="font-family:ui-rounded,system-ui,sans-serif;font-size:30px;font-weight:800">${fmtDur(el_ms)}</div>
+      <div class="bar" style="margin:8px 0"><i style="width:${pct*100}%;background:var(--sky)"></i></div>
+      <div class="tiny muted">${pct>=1?'🎉 Goal reached! Break it gently with protein + veg.':`Goal ${fast.active.target} h · ends ${endAt.toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'})} · ${fmtDur(tgt-el_ms)} left`}</div>
+      <div class="tiny" style="margin-top:6px">${phase}. Water, black coffee, tea and a pinch of salt are fine.</div>
+      <div class="row" style="margin-top:10px"><button class="btn ${pct>=1?'':'ghost'}" id="endFast" style="flex:1">${pct>=1?'Break fast ✓':'End fast early'}</button></div>`;
+  } else {
+    const tomorrowFast = (profile.fastDays||[]).includes((dowIdx()+1)%7);
+    const hint = isFastDay() ? `Today is a fast day. If you started after last night's dinner, tap Start and set the time back.` : tomorrowFast ? `Tomorrow is a fast day. Start the timer right after tonight's dinner.` : `Fast days: ${fd} · ${profile.fastH} h.`;
+    html+=`<p class="tiny">${hint}</p>
+      <div class="grid2" style="margin-top:10px"><div><label class="f">Last meal ended</label><input type="time" id="fastStartT"></div>
+      <div><label class="f">Goal</label><select id="fastTgt">${[16,18,20,24].map(h=>`<option value="${h}" ${h==profile.fastH?'selected':''}>${h} h</option>`).join('')}</select></div></div>
+      <button class="btn" id="startFast" style="width:100%;margin-top:10px">Start fast</button>`;
+    const last=fast.log[fast.log.length-1];
+    if(last) html+=`<p class="tiny muted" style="margin-top:8px">Last fast: ${fmtDur(last.end-last.start)} (${new Date(last.end).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})})</p>`;
+  }
+  el.className = 'card' + (fast.active||isFastDay() ? ' nudge':'');
+  el.innerHTML=html;
+  const st=$('#fastStartT'); if(st){ const n=new Date(); st.value=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`; }
+  const sb=$('#startFast'); if(sb) sb.onclick=()=>{
+    const [h,m]=($('#fastStartT').value||'').split(':').map(Number); const s=new Date(); if(!isNaN(h)){ s.setHours(h,m||0,0,0); if(s>new Date()) s.setDate(s.getDate()-1); }
+    fast.active={start:s.getTime(),target:+$('#fastTgt').value}; Store.set('fast',fast); renderAll(); toast('Fast started 💧');
+  };
+  const eb=$('#endFast'); if(eb) eb.onclick=()=>{
+    const f={start:fast.active.start,end:Date.now(),target:fast.active.target}; fast.log.push(f); fast.log=fast.log.slice(-200); fast.active=null; Store.set('fast',fast);
+    const ok=(f.end-f.start)>=f.target*36e5; renderAll(); toast(ok?'Fast complete! Eat protein first 🍳':'Fast logged. Any fast counts 👍');
+  };
+}
+const newDay = () => ({meals:[],moves:[],water:0,checks:{},weight:null});
+
+function guessSlot(){ const h=new Date().getHours(); return h<10?'Breakfast':h<15?'Lunch':h<21?'Dinner':'Snack'; }
+const $ = s => document.querySelector(s);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2,9);
+const r0 = n => Math.round(n||0);
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),1600); }
+function setSync(s){ if(Store.mode==='cloud'){ $('#sync').textContent = s==='offline'?'⚠︎ not synced':'☁︎ synced'; } else Sync.status(Sync.dirty().length?'pending':'ok'); }
+
+function totals(d=day){ return d.meals.reduce((a,m)=>({k:a.k+m.k,p:a.p+m.p,c:a.c+m.c}),{k:0,p:0,c:0}); }
+function moveTotals(d=day){ return d.moves.reduce((a,m)=>({min:a.min+m.min,k:a.k+m.k}),{min:0,k:0}); }
+function habitState(id){
+  const h = HABITS.find(x=>x.id===id);
+  if(h.auto==='weight' && day.weight) return true;
+  if(h.auto==='move' && day.moves.some(m=>m.type==='Bike'||m.type==='NTC')) return true;
+  if(h.auto==='stretch' && day.moves.some(m=>m.type==='Stretch')) return true;
+  if(h.auto==='water' && day.water>=profile.water) return true;
+  return !!day.checks[id];
+}
+function habitsDone(){ return HABITS.filter(h=>habitState(h.id)).length; }
+
+function saveDay(){
+  Store.set(dkey(TODAY), day);
+  const t = totals(), mv = moveTotals();
+  summary.days[TODAY] = {k:r0(t.k),p:r0(t.p),c:r0(t.c),min:mv.min,h:habitsDone(),moved:mv.min>0};
+  Store.set('summary', summary);
+}
+
+/* ---------------- render: today ---------------- */
+function ring(val,max,color,label,unit){
+  const R=38, C=2*Math.PI*R, pct=Math.min(1,max?val/max:0);
+  const over = val>max;
+  return `<div><div class="ring"><svg width="92" height="92"><circle cx="46" cy="46" r="${R}" stroke="#2a3530" stroke-width="9" fill="none"/>
+  <circle cx="46" cy="46" r="${R}" stroke="${over?'var(--coral)':color}" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg>
+  <div class="v"><div>${r0(val)}<small>/ ${max}${unit}</small></div></div></div><div class="tiny muted" style="margin-top:4px">${label}</div></div>`;
+}
+function renderNudge(){
+  const h = new Date().getHours(), [ch,cm] = (profile.close||'20:00').split(':').map(Number);
+  const t = totals(), mv = moveTotals(), plan = PLAN[(new Date().getDay()+6)%7];
+  let head, body, btn='';
+  const name = profile.name ? `, ${esc(profile.name)}` : '';
+  if(fast.active){ const left=fast.active.start+fast.active.target*36e5-Date.now(); head = left>0?'Fasting: stay strong 💧':'Fast goal reached!'; body = left>0?`${fmtDur(left)} to go. Drink water; hunger peaks then fades in 15–20 min. Keep moving, an easy bike ride is fine.`:'Break it with protein + veg, e.g. eggs and salad, or chicken shish. Don\'t make it a feast.'; }
+  else if(!profile.weight){ head=`Welcome${name}! Set your targets`; body='Add your weight, height and goal so Steady can set calorie and protein targets for you.'; btn='<button class="btn small" id="nudgeSettings" style="margin-top:10px">Set up</button>'; }
+  else if(h<10 && !day.weight){ head=`Good morning${name}. Step on the scale`; body='Then a protein breakfast: eggs or keso. No bread needed.'; btn='<button class="btn small" data-go="progress" style="margin-top:10px">Log weight</button>'; }
+  else if(mv.min===0 && h>=15 && h<ch){ head='Training time 🚴'; body=`Today's plan: <b>${plan.t}</b>. Even 15 minutes on the bike keeps the streak alive.`; btn='<button class="btn small" data-go="move" style="margin-top:10px">Go to Move</button>'; }
+  else if(h>=ch || (h===ch-1 && new Date().getMinutes()>=cm+30)){ head='Kitchen closes '+esc(profile.close); body= mv.min? 'Great job moving today. Finish with 10 min stretching and get to bed on time.' : 'Close the kitchen, do 10 min of NTC stretching, sleep well. Tomorrow is a new rep.'; }
+  else if(t.p < profile.protein*0.4 && h>=13){ head='Protein is behind'; body=`You're at ${r0(t.p)} g of ${profile.protein} g. Make the next meal chicken, shish or eggs + salad.`; btn='<button class="btn small" data-go="food" style="margin-top:10px">Meal ideas</button>'; }
+  else { head = `Plate rule${name}`; body='Half veg, a palm or two of protein, a thumb of fat. Skip the bread and fries.'; btn='<button class="btn small" data-go="food" style="margin-top:10px">Log a meal</button>'; }
+  $('#nudge').innerHTML = `<div class="tiny muted">RIGHT NOW</div><div class="big">${head}</div><div class="tiny">${body}</div>${btn}`;
+  const ns = $('#nudgeSettings'); if(ns) ns.onclick = openSettings;
+}
+function renderToday(){
+  const d = new Date();
+  renderFast();
+  $('#dateline').textContent = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  renderNudge();
+  const t = totals(), mv = moveTotals();
+  const left = profile.kcal - t.k + 0;
+  $('#leftPill').textContent = left>=0 ? `${r0(left)} kcal left` : `${r0(-left)} kcal over`;
+  $('#rings').innerHTML = ring(t.k,profile.kcal,'var(--lime)','Calories','') + ring(t.p,profile.protein,'var(--sky)','Protein','g') + ring(t.c,profile.carbs,'var(--amber)','Carbs (max)','g');
+  $('#habitScore').textContent = `${habitsDone()} / ${HABITS.length}`;
+  $('#checks').innerHTML = HABITS.map(h=>{ const on=habitState(h.id), auto=h.auto && on && !day.checks[h.id];
+    return `<div class="check ${on?'on':''}" data-habit="${h.id}"><div class="box">${on?'✓':''}</div><div class="lbl">${h.l}</div>${auto?'<span class="pill auto">auto</span>':''}</div>`; }).join('');
+  $('#waterPill').textContent = `${day.water} / ${profile.water} glasses`;
+  let w=''; for(let i=0;i<Math.max(profile.water,day.water);i++) w+=`<button class="drop ${i<day.water?'on':''}" data-water="${i}" aria-label="glass ${i+1}"></button>`;
+  $('#water').innerHTML = w;
+  $('#quick').innerHTML = QUICK.map(id=>foodChip(FOODS.find(f=>f.id===id))).join('');
+}
+function foodChip(f){ return `<button class="chip" data-food="${f.id}"><b>${esc(f.n)}</b><span>${esc(f.u)} · ${f.k} kcal · ${f.p}g P${f.c>10?' · '+f.c+'g C':''}</span></button>`; }
+
+/* ---------------- render: food ---------------- */
+function allFoods(){ return FOODS.concat(profile.myFoods||[]); }
+function renderFood(){
+  document.querySelectorAll('#slotSeg button').forEach(b=>b.classList.toggle('on',b.dataset.slot===slot));
+  const mine = (profile.myFoods||[]);
+  $('#library').innerHTML = (mine.length?'<div class="tiny muted" style="width:100%">My foods</div>'+mine.map(foodChip).join('')+'<div class="tiny muted" style="width:100%;margin-top:4px">Library</div>':'')
+    + FOODS.map(f=>f.bad?foodChip(f).replace('<b>','<b style="color:var(--coral)">'):foodChip(f)).join('');
+  const t = totals();
+  $('#eatenPill').textContent = `${r0(t.k)} kcal · ${r0(t.p)}g P · ${r0(t.c)}g C`;
+  const order = ['Breakfast','Lunch','Dinner','Snack'];
+  const meals = [...day.meals].sort((a,b)=>order.indexOf(a.slot)-order.indexOf(b.slot));
+  $('#eaten').innerHTML = meals.length ? meals.map(m=>`<div class="item"><div class="grow"><div>${esc(m.n)}</div><div class="tiny muted">${m.slot} · ${r0(m.k)} kcal · ${r0(m.p)}g P · ${r0(m.c)}g C</div></div><button class="x" data-delmeal="${m.id}" aria-label="remove">×</button></div>`).join('')
+    : '<p class="tiny muted">Nothing logged yet. Tap a food above.</p>';
+  $('#ideas').innerHTML = MEALS.map((m,i)=>{ const it=m.items.map(id=>FOODS.find(f=>f.id===id)); const k=it.reduce((a,f)=>a+f.k,0), p=it.reduce((a,f)=>a+f.p,0);
+    return `<div class="list"><div class="item"><div class="grow"><div><span class="pill">${m.slot}</span> ${esc(m.n)}</div><div class="tiny muted">≈ ${k} kcal · ${r0(p)} g protein</div></div><button class="btn small ghost" data-meal="${i}">Add</button></div></div>`; }).join('');
+  $('#swaps').innerHTML = SWAPS.map(s=>`<div class="list"><div class="item"><div class="grow"><div class="tiny"><span class="tag">instead of</span> ${esc(s[0])}</div><div class="tiny" style="margin-top:4px"><span class="tag g">choose</span> ${esc(s[1])}</div></div></div></div>`).join('');
+}
+function addFood(f, s=slot, silent){
+  if(fast.active && !silent){ toast('You\'re fasting. End the fast first'); go('today'); return; }
+  day.meals.push({id:uid(),n:f.n+(f.u?` (${f.u})`:''),k:f.k,p:f.p,c:f.c,slot:s});
+  saveDay(); renderAll();
+  if(!silent){ toast(`+ ${f.n}`); if(f.warn) setTimeout(()=>toast(f.warn),1700); if(f.bad) setTimeout(()=>toast('Logged. Next meal: plate rule 💪'),1700); }
+}
+
+/* ---------------- render: move ---------------- */
+function weekDates(){ const d=new Date(); const dow=(d.getDay()+6)%7; const out=[]; for(let i=0;i<7;i++){ const x=new Date(d); x.setDate(d.getDate()-dow+i); out.push(x.toLocaleDateString('sv-SE')); } return out; }
+function renderMove(){
+  const dow=(new Date().getDay()+6)%7, p=PLAN[dow], mv=moveTotals();
+  $('#todayPlan').innerHTML = `<div class="tiny muted">TODAY'S PLAN</div><div class="big">${p.t}</div>`+
+    (mv.min? `<div class="tiny">✓ Done: ${mv.min} min, about ${r0(mv.k)} kcal. Nice.</div>` : `<button class="btn small" id="logPlan" style="margin-top:10px">Done it, log ${p.min} min</button>`);
+  const lp=$('#logPlan'); if(lp) lp.onclick=()=>logMove(p.type,p.min,'mod');
+  const wk = weekDates().reduce((a,d)=>a+((d===TODAY?mv.min:(summary.days[d]?.min))||0),0);
+  $('#weekPill').textContent = `${wk} / ${profile.weekMin} min`;
+  $('#weekBar').style.width = Math.min(100,wk/profile.weekMin*100)+'%';
+  const daysLeft = 7-dow;
+  $('#weekNote').textContent = wk>=profile.weekMin ? 'Weekly goal reached 🎉 Anything more is a bonus.' : `${profile.weekMin-wk} min to go over ${daysLeft} day${daysLeft>1?'s':''}, about ${Math.ceil((profile.weekMin-wk)/daysLeft)} min/day.`;
+  document.querySelectorAll('#typeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.type===mtype));
+  updateEst();
+  $('#moves').innerHTML = day.moves.length ? day.moves.map(m=>`<div class="item"><div class="grow"><div>${esc(m.type==='NTC'?'Nike Training Club':m.type)} · ${m.min} min</div><div class="tiny muted">${{easy:'Easy',mod:'Moderate',hard:'Hard'}[m.int]} · ≈ ${r0(m.k)} kcal</div></div><button class="x" data-delmove="${m.id}" aria-label="remove">×</button></div>`).join('') : '<p class="tiny muted">No session yet today.</p>';
+  $('#plan').innerHTML = PLAN.map((x,i)=>`<div class="d ${i===dow?'today':''}"><b>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</b><div class="tiny">${x.t}${(profile.fastDays||[]).includes(i)?` <span class="tag g" style="background:#1d2f3a;color:var(--sky)">fast ${profile.fastH}h</span>`:''}</div></div>`).join('');
+  $('#bikeIdeas').innerHTML = BIKE.map(b=>`<div class="list"><div class="item"><div class="grow"><b>${b[0]}</b><div class="tiny muted">${b[1]}</div></div></div></div>`).join('');
+  $('#ntcIdeas').innerHTML = NTC.map(t=>`<p style="margin:6px 0">• ${t}</p>`).join('');
+}
+function updateEst(){ const m=+$('#mMin').value||0, i=$('#mInt').value; $('#mEst').textContent = `≈ ${r0(m*RATE[mtype][i])} kcal burned`; }
+function logMove(type,min,int){ if(!min) return; day.moves.push({id:uid(),type,min,int,k:min*RATE[type][int]}); saveDay(); renderAll(); toast(`+ ${min} min ${type==='NTC'?'NTC':type.toLowerCase()} 💪`); }
+
+/* ---------------- render: progress ---------------- */
+function series(){ return Object.entries(weights.entries).sort((a,b)=>a[0]<b[0]?-1:1).map(([d,v])=>({d,v:+v})); }
+function avg7(s,i){ const end=new Date(s[i].d); const from=new Date(end); from.setDate(end.getDate()-6); const xs=s.filter(x=>{const t=new Date(x.d);return t>=from&&t<=end;}); return xs.reduce((a,x)=>a+x.v,0)/xs.length; }
+function renderProgress(){
+  $('#wIn').value = day.weight ?? '';
+  const s = series().slice(-60);
+  if(s.length<2){ $('#chart').innerHTML = '<p class="tiny muted">Log your weight for a few mornings and your trend line will appear here.</p>'; }
+  else{
+    const W=520,H=200,P=28; const vs=s.map(x=>x.v); const goal=profile.goal;
+    let lo=Math.min(...vs), hi=Math.max(...vs); if(goal && goal>lo-3) lo=Math.min(lo,goal); lo=Math.floor(lo-0.5); hi=Math.ceil(hi+0.5);
+    const t0=new Date(s[0].d).getTime(), t1=new Date(s[s.length-1].d).getTime()||t0+1;
+    const X=d=>P+(new Date(d).getTime()-t0)/Math.max(1,t1-t0)*(W-P-8), Y=v=>8+(hi-v)/(hi-lo)*(H-P);
+    const av = s.map((x,i)=>({d:x.d,v:avg7(s,i)}));
+    const path = av.map((x,i)=>(i?'L':'M')+X(x.d).toFixed(1)+' '+Y(x.v).toFixed(1)).join(' ');
+    let grid=''; const step=Math.max(1,Math.round((hi-lo)/4)); for(let v=lo; v<=hi; v+=step){ grid+=`<line x1="${P}" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="#2a3530"/><text x="0" y="${Y(v)+4}" fill="#93a39b" font-size="11">${v}</text>`; }
+    const gl = goal && goal>=lo ? `<line x1="${P}" x2="${W}" y1="${Y(goal)}" y2="${Y(goal)}" stroke="#5ee08a" stroke-dasharray="4 4"/><text x="${W-4}" y="${Y(goal)-4}" fill="#5ee08a" font-size="11" text-anchor="end">goal ${goal}</text>`:'';
+    $('#chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="weight trend">${grid}${gl}
+      ${s.map(x=>`<circle cx="${X(x.d)}" cy="${Y(x.v)}" r="3" fill="#93a39b" opacity=".6"/>`).join('')}
+      <path d="${path}" fill="none" stroke="#c6f432" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="${P}" y="${H-4}" fill="#93a39b" font-size="11">${s[0].d.slice(5)}</text><text x="${W}" y="${H-4}" fill="#93a39b" font-size="11" text-anchor="end">${s[s.length-1].d.slice(5)}</text></svg>`;
+  }
+  const all = series(), start = profile.weight && !all.length ? profile.weight : (all[0]?.v ?? profile.weight);
+  const cur = all.length ? avg7(all, all.length-1) : null;
+  $('#wstats').innerHTML = `<div class="stat"><div class="n">${start?(+start).toFixed(1):'–'}</div><div class="l">start kg</div></div>
+    <div class="stat"><div class="n">${cur?cur.toFixed(1):'–'}</div><div class="l">trend kg</div></div>
+    <div class="stat"><div class="n">${cur&&profile.goal?Math.max(0,cur-profile.goal).toFixed(1):'–'}</div><div class="l">kg to goal</div></div>`;
+  // yo-yo guard
+  let g = '<h2>Yo-yo guard</h2>';
+  if(all.length<8){ g+='<p class="tiny muted">After about a week of weigh-ins, this checks your pace: not too fast (rebound risk) and not creeping back up.</p>'; $('#guard').className='card'; }
+  else{
+    const now=avg7(all,all.length-1); const prevIdx = all.findIndex(x=>new Date(x.d)>=new Date(new Date(all[all.length-1].d).getTime()-7*864e5));
+    const prev = avg7(all, Math.max(0,prevIdx-1)); const wkChange = now-prev; const pct = wkChange/prev*100;
+    if(pct < -1){ g+=`<p class="tiny">You're losing about <b>${(-wkChange).toFixed(1)} kg/week</b>. That's fast, and fast loss is what usually comes back. Consider adding ~150 kcal/day, mostly protein.</p>`; $('#guard').className='card warn'; }
+    else if(wkChange > 0.4){ g+=`<p class="tiny">Your trend is up <b>${wkChange.toFixed(1)} kg</b> this week. No panic: check carbs, late snacks and sauce. Tighten the plate rule for 7 days.</p>`; $('#guard').className='card warn'; }
+    else if(wkChange < -0.1){ g+=`<p class="tiny">Down <b>${(-wkChange).toFixed(1)} kg</b> this week. This is the sustainable zone. Keep doing exactly this.</p>`; $('#guard').className='card okb'; }
+    else { g+='<p class="tiny">Weight is stable this week. If you\'re aiming to lose, trim ~150 kcal/day or add one more bike session.</p>'; $('#guard').className='card'; }
+  }
+  $('#guard').innerHTML = g;
+  // history
+  const days=[]; for(let i=0;i<7;i++){ const x=new Date(); x.setDate(x.getDate()-i); days.push(x.toLocaleDateString('sv-SE')); }
+  $('#history').innerHTML = days.map(d=>{ const s=summary.days[d]; const w=weights.entries[d];
+    return `<div class="item"><div style="width:70px" class="tiny muted">${new Date(d).toLocaleDateString('en-GB',{weekday:'short',day:'numeric'})}</div><div class="grow tiny">${s?`${s.k} kcal · ${s.p}g P · ${s.min} min · ${s.h}/${HABITS.length} habits`:'<span class="muted">no log</span>'}</div><div class="tiny">${w?w+' kg':''}</div></div>`; }).join('');
+  // streaks
+  const streak = test => { let n=0; for(let i=0;i<365;i++){ const x=new Date(); x.setDate(x.getDate()-i); const d=x.toLocaleDateString('sv-SE'); const s=summary.days[d]; if(s && test(s,d)) n++; else if(i===0) continue; else break; } return n; };
+  $('#streaks').innerHTML = `<div class="stat"><div class="n">${streak(s=>s.k>0)}</div><div class="l">days logging</div></div>
+    <div class="stat"><div class="n">${streak(s=>s.moved)}</div><div class="l">days moving</div></div>
+    <div class="stat"><div class="n">${streak(s=>s.k>0&&s.k<=profile.kcal+100)}</div><div class="l">days on target</div></div>`;
+}
+
+/* ---------------- render: coach ---------------- */
+function renderCoach(){
+  $('#rules').innerHTML = [
+    `Eat about <b>${profile.kcal} kcal</b> and at least <b>${profile.protein} g protein</b> a day.`,
+    `Keep carbs under <b>${profile.carbs} g</b>: no bread, rice, pasta, fries or sugary drinks.`,
+    'Plate rule at every meal: half veg, protein, a thumb of fat.',
+    `Move <b>${profile.weekMin} min</b> a week: bike + NTC, stretch after.`,
+    `Kitchen closes at <b>${esc(profile.close)}</b>.`,
+    'Weigh every morning, judge by the 7-day trend.',
+    `Fast <b>${profile.fastH} h</b> on <b>${(profile.fastDays||[]).map(i=>DOW[i]).join(' & ')||'(set your days)'}</b>.`,
+  ].map(t=>`<div class="item"><div class="grow">${t}</div></div>`).join('');
+  $('#tip').textContent = TIPS[tipIdx];
+  const sc=Sync.cfg(); if(document.activeElement!==$('#syncUrl')) $('#syncUrl').value=sc.url||''; if(document.activeElement!==$('#syncKey')) $('#syncKey').value=sc.key||'';
+  $('#syncNote').textContent=syncText(); $('#syncOff').style.display=Sync.on()?'':'none';
+  const lb=localStorage.getItem('steady:lastBackup'); $('#backupNote').textContent = lb ? 'Last backup: '+new Date(+lb).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : 'No backup yet. Make one every week or two and save it to Files / Google Drive.';
+  $('#dataNote').textContent = Store.mode==='cloud' ? 'Your log is saved privately to your Claude account, so it follows you across devices. Only you can see it.' : (Sync.on() ? 'Everything is saved on this phone first and works without internet. Changes go to your Google Sheet when you are online.' : 'Everything is saved on this phone and works without internet. Connect Google Sheets above to keep a copy there.');
+}
+
+function renderAll(){ renderToday(); renderFood(); renderMove(); renderProgress(); renderCoach(); }
+
+/* ---------------- settings ---------------- */
+function openSettings(){
+  const p=profile;
+  $('#sName').value=p.name||''; $('#sSex').value=p.sex||'m'; $('#sAge').value=p.age??''; $('#sHeight').value=p.height??'';
+  $('#sWeight').value=p.weight??''; $('#sGoal').value=p.goal??''; $('#sKcal').value=p.kcal; $('#sProt').value=p.protein;
+  $('#sCarb').value=p.carbs; $('#sWater').value=p.water; $('#sMin').value=p.weekMin; $('#sClose').value=p.close||'20:00';
+  $('#sFastH').value=String(p.fastH||16); sFast=[...(p.fastDays||[])]; paintFastDays();
+  $('#suggestNote').textContent=''; $('#settings').classList.add('on');
+}
+let sFast=[];
+function paintFastDays(){ document.querySelectorAll('#sFastDays button').forEach(b=>b.classList.toggle('on',sFast.includes(+b.dataset.fd))); }
+document.querySelectorAll('#sFastDays button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.fd; if(sFast.includes(i)) sFast=sFast.filter(x=>x!==i); else { sFast.push(i); if(sFast.length>2) sFast.shift(); } paintFastDays(); });
+$('#openSettings').onclick = openSettings;
+$('#closeSettings').onclick = ()=>$('#settings').classList.remove('on');
+$('#suggest').onclick = ()=>{
+  const w=+$('#sWeight').value, h=+$('#sHeight').value, a=+$('#sAge').value, sex=$('#sSex').value, goal=+$('#sGoal').value||w;
+  if(!w||!h||!a){ $('#suggestNote').textContent='Fill in age, height and current weight first.'; return; }
+  const bmr = 10*w + 6.25*h - 5*a + (sex==='m'?5:-161);
+  const tdee = bmr*1.4;
+  const kcal = Math.max(sex==='m'?1500:1200, Math.round((tdee-500)/50)*50);
+  const prot = Math.round(Math.min(w, goal+10)*1.8/5)*5;
+  $('#sKcal').value=kcal; $('#sProt').value=prot; $('#sCarb').value=60;
+  $('#suggestNote').textContent = `Estimated maintenance ≈ ${Math.round(tdee)} kcal (lightly active). Target is ~500 below, for about 0.4–0.5 kg/week. Rough estimate only. Adjust after 2–3 weeks based on your trend.`;
+};
+$('#saveSettings').onclick = ()=>{
+  const n = id => { const v=$(id).value; return v===''?null:+v; };
+  Object.assign(profile,{name:$('#sName').value.trim(),sex:$('#sSex').value,age:n('#sAge'),height:n('#sHeight'),weight:n('#sWeight'),goal:n('#sGoal'),
+    kcal:n('#sKcal')||1900,protein:n('#sProt')||140,carbs:n('#sCarb')??60,water:n('#sWater')||8,weekMin:n('#sMin')||150,close:$('#sClose').value||'20:00', fastDays:[...sFast].sort(), fastH:+$('#sFastH').value||16});
+  Store.set('profile',profile); $('#settings').classList.remove('on'); renderAll(); toast('Targets saved');
+};
+
+/* ---------------- custom food ---------------- */
+$('#customFood').onclick = ()=>{ ['#cfName','#cfK','#cfP','#cfC'].forEach(s=>$(s).value=''); $('#cfSave').checked=false; $('#foodSheet').classList.add('on'); };
+$('#cfCancel').onclick = ()=>$('#foodSheet').classList.remove('on');
+$('#cfAdd').onclick = ()=>{
+  const f={id:'my-'+uid(),n:$('#cfName').value.trim()||'Food',u:'',k:+$('#cfK').value||0,p:+$('#cfP').value||0,c:+$('#cfC').value||0};
+  if($('#cfSave').checked){ profile.myFoods=(profile.myFoods||[]).concat(f); Store.set('profile',profile); }
+  $('#foodSheet').classList.remove('on'); addFood(f);
+};
+
+/* ---------------- events ---------------- */
+function go(tab){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+tab));
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  window.scrollTo(0,0);
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-tab],[data-go],[data-habit],[data-water],[data-food],[data-delmeal],[data-meal],[data-slot],[data-type],[data-delmove]');
+  if(!t) return; const d=t.dataset;
+  if(d.tab) go(d.tab);
+  else if(d.go) go(d.go);
+  else if(d.habit){ const h=HABITS.find(x=>x.id===d.habit); if(h.auto && habitState(h.id) && !day.checks[h.id]){ toast('Ticked automatically from your log'); return; } day.checks[d.habit]=!day.checks[d.habit]; saveDay(); renderAll(); if(habitsDone()===HABITS.length) toast('All habits done! 🏆'); }
+  else if(d.water!==undefined){ const i=+d.water; day.water = (i+1===day.water)? i : i+1; saveDay(); renderAll(); }
+  else if(d.food){ addFood(allFoods().find(f=>f.id===d.food)); }
+  else if(d.delmeal){ day.meals=day.meals.filter(m=>m.id!==d.delmeal); saveDay(); renderAll(); }
+  else if(d.meal!==undefined){ const m=MEALS[+d.meal]; if(fast.active){ toast('You\'re fasting. End the fast first'); go('today'); return; } m.items.forEach(id=>addFood(FOODS.find(f=>f.id===id), m.slot, true)); toast(`+ ${m.n}`); }
+  else if(d.slot){ slot=d.slot; renderFood(); }
+  else if(d.type){ mtype=d.type; if(mtype==='Stretch') $('#mMin').value=10; renderMove(); }
+  else if(d.delmove){ day.moves=day.moves.filter(m=>m.id!==d.delmove); saveDay(); renderAll(); }
+});
+$('#mMin').oninput = updateEst; $('#mInt').onchange = updateEst;
+$('#logMove').onclick = ()=>logMove(mtype, +$('#mMin').value, $('#mInt').value);
+$('#wSave').onclick = ()=>{
+  const v = parseFloat(String($('#wIn').value).replace(',','.')); if(!v||v<30||v>350){ toast('Enter your weight in kg'); return; }
+  day.weight=v; weights.entries[TODAY]=v; Store.set('weights',weights); saveDay(); renderAll(); toast('Weight saved');
+};
+$('#nextTip').onclick = ()=>{ tipIdx=(tipIdx+1)%TIPS.length; $('#tip').textContent=TIPS[tipIdx]; };
+document.querySelectorAll('.sheet').forEach(s=>s.addEventListener('click',e=>{ if(e.target===s) s.classList.remove('on'); }));
+
+// roll over to a new day if the app stays open past midnight
+setInterval(async ()=>{ if(today()!==TODAY){ TODAY=today(); day=(await Store.get(dkey(TODAY)))||newDay(); renderAll(); } else { renderNudge(); renderFast(); } }, 60000);
+
+/* ---------------- sync UI ---------------- */
+async function reloadFromLocal(){
+  profile = Object.assign({},DEFAULT_PROFILE, Store.local('profile')||{});
+  day = Object.assign(newDay(), Store.local(dkey(TODAY))||{});
+  weights = Store.local('weights')||{entries:{}};
+  summary = Store.local('summary')||{days:{}};
+  fast = Object.assign({active:null,log:[]}, Store.local('fast')||{});
+  renderAll();
+}
+$('#syncConnect').onclick = async ()=>{
+  const url=$('#syncUrl').value.trim(), key=$('#syncKey').value.trim();
+  if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(url)){ toast('Paste the Web app URL ending in /exec'); return; }
+  if(!key){ toast('Paste your sync key'); return; }
+  if(!navigator.onLine){ toast('You need internet to connect'); return; }
+  $('#syncConnect').textContent='Connecting…';
+  try{
+    const r = await fetch(url+'?key='+encodeURIComponent(key)); const j = await r.json();
+    if(!j.ok) throw new Error(j.error||'no answer');
+    Sync.saveCfg({url,key});
+    const changed = await Sync.pull();
+    if(changed) await reloadFromLocal();
+    await Sync.flush(); renderCoach();
+    toast(changed?'Connected, data restored from Sheets':'Connected to Google Sheets ✓');
+  }catch(e){ toast('Could not connect: '+e.message); }
+  $('#syncConnect').textContent='Connect';
+};
+$('#syncNow').onclick = async ()=>{ if(!Sync.on()){ toast('Connect first'); return; } try{ if(await Sync.pull()) await reloadFromLocal(); await Sync.flush(); renderCoach(); toast('Synced'); }catch(e){ toast('Sync failed: '+e.message); } };
+$('#syncOff').onclick = ()=>{ localStorage.removeItem('steady:__sync'); Sync.status('ok'); renderCoach(); toast('Disconnected. Data stays on this phone'); };
+
+/* ---------------- backup ---------------- */
+$('#exportBtn').onclick = async ()=>{
+  const data={app:'steady',version:1,exported:new Date().toISOString(),items:{}};
+  for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith('steady:') && k!=='steady:lastBackup' && k!=='steady:__sync') data.items[k]=localStorage.getItem(k); }
+  const json=JSON.stringify(data), name=`steady-backup-${TODAY}.json`;
+  const file=new File([json],name,{type:'application/json'});
+  try{
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:'Steady backup'}); }
+    else { const a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); }
+    localStorage.setItem('steady:lastBackup',Date.now()); renderCoach(); toast('Backup saved');
+  }catch(e){ if(e.name!=='AbortError') toast('Backup failed: '+e.message); }
+};
+$('#importFile').onchange = async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{
+    const data=JSON.parse(await f.text()); if(data.app!=='steady'||!data.items) throw new Error('not a Steady backup');
+    Object.entries(data.items).forEach(([k,v])=>{ if(k.startsWith('steady:')) localStorage.setItem(k,v); });
+    toast('Restored. Reloading…'); setTimeout(()=>location.reload(),900);
+  }catch(err){ toast('Could not restore: '+err.message); }
+  e.target.value='';
+};
+
+/* ---------------- offline install ---------------- */
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){}
+
+/* ---------------- boot ---------------- */
+(async function boot(){
+  // render immediately from local copy, then upgrade to account storage
+  profile = Object.assign({},DEFAULT_PROFILE, Store.local('profile')||{});
+  day = Object.assign(newDay(), Store.local(dkey(TODAY))||{});
+  weights = Store.local('weights')||{entries:{}};
+  summary = Store.local('summary')||{days:{}};
+  fast = Object.assign({active:null,log:[]}, Store.local('fast')||{});
+  setSync(); renderAll();
+  if(Sync.on()){ try{ if(await Sync.pull()) await reloadFromLocal(); }catch(e){ console.warn(e); } Sync.flush(); }
+  await Store.init(); setSync();
+  if(Store.mode==='cloud'){
+    const [p,dd,w,s,f] = await Promise.all([Store.get('profile'),Store.get(dkey(TODAY)),Store.get('weights'),Store.get('summary'),Store.get('fast')]);
+    if(f) fast=Object.assign({active:null,log:[]},f);
+    if(p) profile=Object.assign({},DEFAULT_PROFILE,p); else if(Store.local('profile')) Store.set('profile',profile);
+    if(dd) day=Object.assign(newDay(),dd);
+    if(w) weights=Object.assign({entries:{}},w);
+    if(s) summary=Object.assign({days:{}},s);
+    renderAll();
+  }
+})();
+</script>
+</body>
+</html>
